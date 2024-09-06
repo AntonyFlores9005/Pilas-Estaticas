@@ -1,0 +1,251 @@
+#include <iostream>
+#include <windows.h>
+#include <string>
+#include <cstdlib>
+
+// Clase Empleado
+class Empleado {
+    private:
+    //Atributos
+    int ClaveEmpleado;
+    std::string Nombre;
+    std::string Domicilio;
+    float Sueldo;
+    std::string ReportaA;
+    protected:        
+    public:
+
+    //Metodos
+    Empleado(int CE = 0, std::string N = "", std::string Dom = "", float Sld = 0.0, std::string URA = "") {
+        ClaveEmpleado = CE; Nombre = N; Domicilio = Dom; Sueldo = Sld; ReportaA = URA;
+    }
+
+    Empleado(const Empleado& otroEmpleado) {
+        ClaveEmpleado = otroEmpleado.ClaveEmpleado;
+        Nombre = otroEmpleado.Nombre;
+        Domicilio = otroEmpleado.Domicilio;
+        Sueldo = otroEmpleado.Sueldo;
+        ReportaA = otroEmpleado.ReportaA;
+    }
+
+    void SetClave(int CE){ClaveEmpleado=CE;}
+    int getClave(){return ClaveEmpleado;}
+    void SetNombre(std::string N){Nombre=N;}
+    std::string getNombre(){return Nombre;}        
+    void SetDomicilio(std::string Dom){Domicilio=Dom;}
+    std::string getDomicilio(){return Domicilio;}
+    void SetSueldo(float Sld){Sueldo=Sld;}
+    float getSueldo(){return Sueldo;}
+    void SetReportaA(std::string URA){ReportaA=URA;}
+    std::string getReportaA(){return ReportaA;}
+
+    //Sobrecarga << >>
+    friend std::ostream& operator<<(std::ostream& o, const Empleado& e) {
+        o << "Clave de empleado: " << e.ClaveEmpleado << std::endl;
+        o << "Nombre: " << e.Nombre << std::endl;
+        o << "Domicilio: " << e.Domicilio << std::endl;
+        o << "Sueldo: " << e.Sueldo << std::endl;
+        o << "Persona a quien reporta: " << e.ReportaA << std::endl;
+        return o;
+    }
+
+    // Sobrecarga del operador de asignación =
+    Empleado& operator=(const Empleado& otroEmpleado) {
+        if (this != &otroEmpleado) { 
+            ClaveEmpleado = otroEmpleado.ClaveEmpleado;
+            Nombre = otroEmpleado.Nombre;
+            Domicilio = otroEmpleado.Domicilio;
+            Sueldo = otroEmpleado.Sueldo;
+            ReportaA = otroEmpleado.ReportaA;
+        }
+        return *this; 
+    }
+
+    friend std::istream& operator>>(std::istream& i, Empleado& e) {
+        std::cout << "Ingrese la clave del empleado: ";
+        i >> e.ClaveEmpleado;
+        std::cout << "Ingrese el nombre del empleado: ";
+        i.ignore();
+        std::getline(i, e.Nombre);
+        std::cout << "Ingrese el domicilio del empleado: ";
+        std::getline(i, e.Domicilio);
+        std::cout << "Ingrese el sueldo del empleado: ";
+        i >> e.Sueldo;
+        std::cout << "Ingrese el jefe del empleado: ";
+        i.ignore();
+        std::getline(i, e.ReportaA);
+        return i;
+    }
+
+        void Imprime(){
+        std::cout << "Clave: " << ClaveEmpleado << std::endl;
+        std::cout << "Nombre: " << Nombre << std::endl;
+        std::cout << "Domicilio: " << Domicilio << std::endl;
+        std::cout << "Sueldo: " << Sueldo << std::endl;
+        std::cout << "Reporta a: " << ReportaA << std::endl;
+    }
+
+    //sobrecarga == !=
+    bool operator==(const Empleado& e) const {
+    return this->ClaveEmpleado == e.ClaveEmpleado; 
+    }
+    
+    bool operator!=(const Empleado& e) const {
+    return !(*this == e); 
+    }
+
+    //Sobrecarga + < >
+    Empleado operator+(const Empleado& otroEmpleado) const {
+        return Empleado(0, "", "", this->Sueldo + otroEmpleado.Sueldo, ""); 
+    }
+
+    bool operator<(const Empleado& otroEmpleado) const {
+        return this->Sueldo < otroEmpleado.Sueldo;
+    }
+
+    bool operator>(const Empleado& otroEmpleado) const {
+        return this->Sueldo > otroEmpleado.Sueldo;
+    }    
+};
+
+#define MAX 15
+
+template <typename T>
+class Pila{
+    private: T Datos[MAX];
+    int tam;
+
+    public:
+    Pila() : tam(0) {}
+
+    bool vacia() const {
+        return tam == 0;
+    }
+
+    bool llena() const {
+        return tam == MAX;
+    }
+
+    void push(const T& elemento) {
+        if (llena()) {
+            std::cout << "La pila esta llena" << std::endl;
+        } else {
+            Datos[tam++] = elemento;
+        }
+    }
+
+    T pop() {
+        if (vacia()) {
+            std::cout << "La pila esta vacia" << std::endl;
+            return T(); //Esto devuelve el objeto empleado que se eliminara pues
+        } else {
+            return Datos[--tam];
+        }
+    }
+
+    T top() const {
+        if (vacia()) {
+            std::cout << "La pila esta vacia." << std::endl;
+            return T();
+        } else {
+            return Datos[tam - 1];
+        }
+    }
+
+    void mostrar() const {
+        if (vacia()) {
+            std::cout << "La pila esta vacia." << std::endl;
+            return;
+        }
+        std::cout << "Elementos en la pila:" << std::endl;
+        for (int i = tam - 1; i >= 0; --i) {  
+            std::cout << Datos[i] << std::endl;
+        }
+    }    
+};
+
+void mostrarMenu() {
+    std::cout << "\n\tMenu:\n";
+    std::cout << "\t1. Agregar empleado (push)\n";
+    std::cout << "\t2. Eliminar empleado (pop)\n";
+    std::cout << "\t3. Mostrar todos los empleados\n";
+    std::cout << "\t4. Mostrar empleado en la cima (top)\n";
+    std::cout << "\t0. Salir\n";
+    std::cout << "\tIngrese su opcion: ";
+}
+
+int main() {
+    Pila<Empleado> listaEmpleados; 
+    int opcion;
+
+    do {
+        system("cls"); 
+        system("Color F0"); 
+        mostrarMenu();
+        std::cin >> opcion;
+
+        switch (opcion) {
+            case 1: {  
+                system("cls");
+                if (listaEmpleados.llena()) {
+                    std::cout << "La pila esta llena" << std::endl;
+                } else {
+                    Empleado nuevoEmpleado;
+                    std::cin >> nuevoEmpleado;
+                    listaEmpleados.push(nuevoEmpleado);
+                    std::cout << "Empleado agregado" << std::endl;
+                }
+                system("pause");
+                break;
+            }
+
+            case 2: {
+                system("cls");
+                if (!listaEmpleados.vacia()) {
+                    Empleado empleadoEliminado = listaEmpleados.pop();
+                    std::cout << "Empleado eliminado de la pila:" << std::endl;
+                    empleadoEliminado.Imprime();
+                } else {
+                    std::cout << "La pila esta vacia" << std::endl;
+                }
+                system("pause");
+                break;
+            }
+
+            case 3: { 
+                system("cls");
+                listaEmpleados.mostrar();
+                system("pause");
+                break;
+            }
+
+            case 4: { 
+                system("cls");
+                if (!listaEmpleados.vacia()) {
+                    Empleado empleadoTop = listaEmpleados.top();
+                    std::cout << "Empleado en la cima de la pila:" << std::endl;
+                    empleadoTop.Imprime();
+                } else {
+                    std::cout << "La pila esta vacia." << std::endl;
+                }
+                system("pause");
+                break;
+            }
+
+            case 0: {  
+                std::cout << "Gracias por usar" << std::endl;
+                break;
+            }
+
+            default: {
+                system("cls");
+                std::cout << "Opcion invalida" << std::endl;
+                system("Color 4F");
+                Sleep(2500);
+            }
+        }
+
+    } while (opcion != 0);
+
+    return 0;
+}
